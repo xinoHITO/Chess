@@ -1,7 +1,4 @@
-﻿using Packages.Rider.Editor.UnitTesting;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
@@ -10,10 +7,11 @@ public class ChessPiece : MonoBehaviour
 
     protected static Board BoardManager;
 
-    protected GridSpace CurrentSpace;
+    protected BoardSpace CurrentSpace;
 
     void Start()
     {
+
         BoardManager = Board.Instance;
         if (BoardManager == null)
         {
@@ -26,16 +24,32 @@ public class ChessPiece : MonoBehaviour
 #if UNITY_EDITOR
     private void Update()
     {
-        if (Input.GetKey(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            var spaces = MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
-            foreach (var space in spaces)
-            {
-                Debug.DrawRay(space.transform.position, Vector3.up * 1000, Color.green);
-            }
+            Move();
         }
     }
+
+    private void Move()
+    {
+        BoardSpace[] spaces = GetAvailableSpaces();
+        foreach (var space in spaces)
+        {
+            Debug.DrawRay(space.transform.position, Vector3.up * 1000, Color.green, 1.0f);
+        }
+
+        if (spaces.Length > 0)
+        {
+            int index = UnityEngine.Random.Range(0, spaces.Length);
+            MoveTo(spaces[index]);
+        }
+    }
+
 #endif
+    public BoardSpace[] GetAvailableSpaces()
+    {
+        return MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+    }
 
     private void Initialize()
     {
@@ -43,7 +57,7 @@ public class ChessPiece : MonoBehaviour
         RaycastHit hitInfo;
         if (Physics.Raycast(origin, Vector3.down, out hitInfo, 1000))
         {
-            CurrentSpace = hitInfo.collider?.GetComponent<GridSpace>();
+            CurrentSpace = hitInfo.collider?.GetComponent<BoardSpace>();
         }
         else
         {
@@ -51,31 +65,51 @@ public class ChessPiece : MonoBehaviour
         }
     }
 
-    protected virtual GridSpace[] GetAvailableSpaces()
+    private void MoveTo(BoardSpace targetSpace)
     {
-        GridSpace[] spaces = new GridSpace[1];
-        spaces[0] = BoardManager.GetGridSpace(0, 0);
-        return spaces;
-    }
-
-    private void MoveTo(int newX, int newY)
-    {
-        if (newX >= BoardManager.Rows || newY >= BoardManager.Columns)
+        if (targetSpace.x >= BoardManager.Rows || targetSpace.y >= BoardManager.Columns)
         {
-            Debug.LogError(string.Format("Invalid board position x:{0} | y:{1}", newX, newY));
+            Debug.LogError(string.Format("Invalid board position x:{0} | y:{1}", targetSpace.x, targetSpace.y));
             return;
         }
 
-        var gridSpace = BoardManager.GetGridSpace(newX, newY);
+        var gridSpace = BoardManager.GetGridSpace(targetSpace.x, targetSpace.y);
         if (gridSpace == null)
         {
             Debug.LogError("Board space not found");
             return;
         }
 
-        Debug.Log(string.Format("Moved to x:{0} | y:{1}", newX, newY));
-        gridSpace = CurrentSpace;
+        Debug.Log(string.Format("Moved to x:{0} | y:{1}", targetSpace.x, targetSpace.y));
+        CurrentSpace = gridSpace;
         transform.position = gridSpace.transform.position;
+    }
+
+    public void ClearHighlight()
+    {
+        var spaces = GetAvailableSpaces();
+        foreach (var space in spaces)
+        {
+            space.ClearHighlight();
+        }
+    }
+
+    public void HighlightHover()
+    {
+        var spaces = GetAvailableSpaces();
+        foreach (var space in spaces)
+        {
+            space.HighlightHover(true);
+        }
+    }
+
+    public void HighlightClick()
+    {
+        var spaces = GetAvailableSpaces();
+        foreach (var space in spaces)
+        {
+            space.HighlightClick(true);
+        }
     }
 
 }

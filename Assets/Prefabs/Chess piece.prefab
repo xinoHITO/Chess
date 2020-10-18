@@ -169,3 +169,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MoveLogic: {fileID: 0}
+  ClickColor: {r: 0.120120525, g: 1, b: 0, a: 0.59607846}

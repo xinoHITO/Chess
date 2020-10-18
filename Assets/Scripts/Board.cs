@@ -5,7 +5,7 @@ using UnityEngine.Events;
 
 public class Board : MonoBehaviour
 {
-    public GridSpace GridSpacePrefab;
+    public BoardSpace GridSpacePrefab;
     public float GridSpaceSize = 1;
 
     [Header("Board size")]
@@ -16,7 +16,7 @@ public class Board : MonoBehaviour
 
     public static Board Instance;
 
-    private static GridSpace[] GridSpaces;
+    private static BoardSpace[] BoardSpaces;
 
     private void Awake()
     {
@@ -52,7 +52,7 @@ public class Board : MonoBehaviour
         {
             for (int j = 0; j < Columns; j++)
             {
-                GridSpace boardGrid = Instantiate(GridSpacePrefab, transform);
+                BoardSpace boardGrid = Instantiate(GridSpacePrefab, transform);
                 boardGrid.x = j;
                 boardGrid.y = i;
                 boardGrid.transform.position = transform.position + new Vector3(GridSpaceSize * j, 0, GridSpaceSize * i);
@@ -63,15 +63,15 @@ public class Board : MonoBehaviour
 
     private void CacheBoardSpaces()
     {
-        if (GridSpaces == null)
+        if (BoardSpaces == null)
         {
-            GridSpaces = FindObjectsOfType<GridSpace>();
+            BoardSpaces = FindObjectsOfType<BoardSpace>();
         }
     }
 
-    public GridSpace GetGridSpace(int x, int y)
+    public BoardSpace GetGridSpace(int x, int y)
     {
-        foreach (var gridSpace in GridSpaces)
+        foreach (var gridSpace in BoardSpaces)
         {
             if (gridSpace.x == x && gridSpace.y == y)
             {
@@ -79,6 +79,13 @@ public class Board : MonoBehaviour
             }
         }
         return null;
+    }
+
+    public void ClearHighlight() {
+        foreach (var space in BoardSpaces)
+        {
+            space.HighlightHover(false);
+        }
     }
 
 }
