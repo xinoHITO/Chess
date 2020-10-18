@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Board : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class Board : MonoBehaviour
     [Header("Board size")]
     public int Rows = 8;
     public int Columns = 8;
+
+    public UnityAction OnCreatedBoard;
 
     public static Board Instance;
 
@@ -21,7 +24,8 @@ public class Board : MonoBehaviour
         {
             Instance = this;
         }
-        else {
+        else
+        {
             Destroy(this);
         }
     }
@@ -32,6 +36,14 @@ public class Board : MonoBehaviour
         CreateBoardSpaces();
 
         CacheBoardSpaces();
+
+        StartCoroutine(DelayCoroutine());
+
+        IEnumerator DelayCoroutine()
+        {
+            yield return null;
+            OnCreatedBoard?.Invoke();
+        }
     }
 
     private void CreateBoardSpaces()
@@ -46,6 +58,7 @@ public class Board : MonoBehaviour
                 boardGrid.transform.position = transform.position + new Vector3(GridSpaceSize * j, 0, GridSpaceSize * i);
             }
         }
+
     }
 
     private void CacheBoardSpaces()

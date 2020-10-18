@@ -373,6 +373,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2127079314107189836, guid: 50fb92c2c14c2d34fa67c7845c0e6977,
+        type: 3}
+      propertyPath: PieceMoveLogic
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2127079314107189836, guid: 50fb92c2c14c2d34fa67c7845c0e6977,
+        type: 3}
+      propertyPath: MoveLogic
+      value: 
+      objectReference: {fileID: 11400000, guid: 0370223c03c206e4181e6a1e7a554a31,
+        type: 2}
     - target: {fileID: 4657851167007388740, guid: 50fb92c2c14c2d34fa67c7845c0e6977,
         type: 3}
       propertyPath: m_LocalPosition.x
