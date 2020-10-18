@@ -1,31 +1,33 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerControl : MonoBehaviour
 {
-    public LayerMask Mask;
+    public LayerMask BoardSpaceMask;
+    public LayerMask ChessPieceMask;
     private static Camera MainCamera;
 
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
-    // Start is called before the first frame update
     void Start()
     {
         MainCamera = Camera.main;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        ChessPiece selectedPiece = GetSelectedPiece();
+        ChessPiece selectedPiece = GetPieceBelowMouse();
 
         if (ClickedPiece == null)
         {
             HoverPieces(selectedPiece);
         }
-        
+
+        ClickHighlightedBoardSpace();
+
         ClickPiece(selectedPiece);
     }
 
@@ -52,12 +54,35 @@ public class PlayerControl : MonoBehaviour
         ClickedPiece?.HighlightClick();
     }
 
-    private ChessPiece GetSelectedPiece()
+    private void ClickHighlightedBoardSpace()
+    {
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hitInfo;
+        BoardSpace boardSpace = null;
+
+        if (Physics.Raycast(ray, out hitInfo, 1000, BoardSpaceMask))
+        {
+            Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue);
+            boardSpace = hitInfo.collider?.GetComponent<BoardSpace>();
+        }
+        else {
+            Debug.DrawRay(ray.origin, ray.direction * 1000, Color.magenta);
+        }
+
+        if (boardSpace != null)
+        {
+            ClickedPiece?.MoveTo(boardSpace);
+        }
+    }
+
+    private ChessPiece GetPieceBelowMouse()
     {
         Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         ChessPiece piece = null;
-        if (Physics.Raycast(ray, out hitInfo, 1000, Mask))
+        if (Physics.Raycast(ray, out hitInfo, 1000, ChessPieceMask))
         {
             piece = hitInfo.collider?.GetComponent<ChessPiece>();
         }

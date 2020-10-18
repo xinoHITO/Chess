@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BoardSpace : MonoBehaviour
 {
+    private const int LAYER_DEFAULT = 0;
+    private const int LAYER_IGNORE_RAYCAST = 2;
+
     public GameObject Highlight;
     public int x = 0;
     public int y = 0;
@@ -18,25 +21,27 @@ public class BoardSpace : MonoBehaviour
         HighlightRend = Highlight.GetComponent<Renderer>();
     }
 
-    public void HighlightHover(bool value)
+    public void HighlightHover()
     {
-        DoHighlight(value, HoverColor);
+        DoHighlight(HoverColor);
     }
 
-    public void HighlightClick(bool value)
+    public void HighlightClick()
     {
-        DoHighlight(value, ClickColor);
+        DoHighlight(ClickColor);
     }
 
     public void ClearHighlight()
     {
+        gameObject.layer = LAYER_IGNORE_RAYCAST;
         Highlight.SetActive(false);
     }
 
-    private void DoHighlight(bool value, Color color)
+    private void DoHighlight(Color color)
     {
-        Highlight.SetActive(value);
+        Highlight.SetActive(true);
         HighlightRend.material.color = color;
         HighlightRend.material.SetColor("_Emission", color);
+        gameObject.layer = LAYER_DEFAULT;
     }
 }

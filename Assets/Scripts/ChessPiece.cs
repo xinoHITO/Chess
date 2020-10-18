@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
@@ -55,7 +56,12 @@ public class ChessPiece : MonoBehaviour
     {
         Vector3 origin = transform.position + Vector3.up * 100;
         RaycastHit hitInfo;
-        if (Physics.Raycast(origin, Vector3.down, out hitInfo, 1000))
+
+        List<string> layerNames = new List<string>();
+        layerNames.Add(LayerMask.LayerToName(gameObject.layer));
+        int mask = LayerMask.GetMask(layerNames.ToArray());
+        mask = ~mask;
+        if (Physics.Raycast(origin, Vector3.down, out hitInfo, 1000, mask))
         {
             CurrentSpace = hitInfo.collider?.GetComponent<BoardSpace>();
         }
@@ -65,7 +71,7 @@ public class ChessPiece : MonoBehaviour
         }
     }
 
-    private void MoveTo(BoardSpace targetSpace)
+    public void MoveTo(BoardSpace targetSpace)
     {
         if (targetSpace.x >= BoardManager.Rows || targetSpace.y >= BoardManager.Columns)
         {
@@ -80,7 +86,6 @@ public class ChessPiece : MonoBehaviour
             return;
         }
 
-        Debug.Log(string.Format("Moved to x:{0} | y:{1}", targetSpace.x, targetSpace.y));
         CurrentSpace = gridSpace;
         transform.position = gridSpace.transform.position;
     }
@@ -99,7 +104,7 @@ public class ChessPiece : MonoBehaviour
         var spaces = GetAvailableSpaces();
         foreach (var space in spaces)
         {
-            space.HighlightHover(true);
+            space.HighlightHover();
         }
     }
 
@@ -108,7 +113,7 @@ public class ChessPiece : MonoBehaviour
         var spaces = GetAvailableSpaces();
         foreach (var space in spaces)
         {
-            space.HighlightClick(true);
+            space.HighlightClick();
         }
     }
 

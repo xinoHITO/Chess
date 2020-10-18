@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4474506025885644832}
   - component: {fileID: 9051223327111242159}
   - component: {fileID: 5612742314666241593}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Board space
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 8249298419724026418}
   - component: {fileID: 9218118237674173532}
   - component: {fileID: 2838941698059285154}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}

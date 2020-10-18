@@ -84,7 +84,7 @@ public class Board : MonoBehaviour
     public void ClearHighlight() {
         foreach (var space in BoardSpaces)
         {
-            space.HighlightHover(false);
+            space.ClearHighlight();
         }
     }
 

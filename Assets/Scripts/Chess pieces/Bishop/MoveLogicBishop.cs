@@ -29,6 +29,24 @@ public class MoveLogicBishop : MoveLogicBase
             temp = Board.Instance.GetGridSpace(x - counter, y + counter);
         }
 
+        counter = 1;
+        temp = Board.Instance.GetGridSpace(x + counter, y - counter);
+        while (temp != null)
+        {
+            spaces.Add(temp);
+            counter++;
+            temp = Board.Instance.GetGridSpace(x + counter, y - counter);
+        }
+
+        counter = 1;
+        temp = Board.Instance.GetGridSpace(x - counter, y - counter);
+        while (temp != null)
+        {
+            spaces.Add(temp);
+            counter++;
+            temp = Board.Instance.GetGridSpace(x - counter, y - counter);
+        }
+
         return spaces.ToArray();
     }
 }
