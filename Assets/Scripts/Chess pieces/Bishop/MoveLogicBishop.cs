@@ -12,39 +12,55 @@ public class MoveLogicBishop : MoveLogicBase
         List<BoardSpace> spaces = new List<BoardSpace>();
 
         int counter = 1;
-        var temp = Board.Instance.GetGridSpace(x + counter, y + counter);
-        while (temp != null)
+        var space = Board.Instance.GetGridSpace(x + counter, y + counter);
+        while (space != null)
         {
-            spaces.Add(temp);
+            spaces.Add(space);
             counter++;
-            temp = Board.Instance.GetGridSpace(x + counter, y + counter);
+            if (space.IsOccupied())
+            {
+                break;
+            }
+            space = Board.Instance.GetGridSpace(x + counter, y + counter);
         }
 
         counter = 1;
-        temp = Board.Instance.GetGridSpace(x - counter, y + counter);
-        while (temp != null)
+        space = Board.Instance.GetGridSpace(x - counter, y + counter);
+        while (space != null)
         {
-            spaces.Add(temp);
+            spaces.Add(space);
             counter++;
-            temp = Board.Instance.GetGridSpace(x - counter, y + counter);
+            if (space.IsOccupied())
+            {
+                break;
+            }
+            space = Board.Instance.GetGridSpace(x - counter, y + counter);
         }
 
         counter = 1;
-        temp = Board.Instance.GetGridSpace(x + counter, y - counter);
-        while (temp != null)
+        space = Board.Instance.GetGridSpace(x + counter, y - counter);
+        while (space != null)
         {
-            spaces.Add(temp);
+            spaces.Add(space);
             counter++;
-            temp = Board.Instance.GetGridSpace(x + counter, y - counter);
+            if (space.IsOccupied())
+            {
+                break;
+            }
+            space = Board.Instance.GetGridSpace(x + counter, y - counter);
         }
 
         counter = 1;
-        temp = Board.Instance.GetGridSpace(x - counter, y - counter);
-        while (temp != null)
+        space = Board.Instance.GetGridSpace(x - counter, y - counter);
+        while (space != null)
         {
-            spaces.Add(temp);
+            spaces.Add(space);
             counter++;
-            temp = Board.Instance.GetGridSpace(x - counter, y - counter);
+            if (space.IsOccupied())
+            {
+                break;
+            }
+            space = Board.Instance.GetGridSpace(x - counter, y - counter);
         }
 
         return spaces.ToArray();

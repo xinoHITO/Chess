@@ -39,6 +39,10 @@ public class BoardSpace : MonoBehaviour
         Piece = null;
     }
 
+    public bool IsOccupied() {
+        return Piece != null;
+    }
+
     public void HighlightHover()
     {
         DoHighlight(HoverColor);

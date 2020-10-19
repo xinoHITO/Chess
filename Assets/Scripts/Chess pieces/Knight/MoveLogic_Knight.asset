@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f719af6decc37646bea3c718b1b0cc7, type: 3}
-  m_Name: MoveLogic_Bishop
+  m_Script: {fileID: 11500000, guid: 55494af48d93f39409dadedbfeb4a648, type: 3}
+  m_Name: MoveLogic_Knight
   m_EditorClassIdentifier: 
-  Graphic: {fileID: 1028868664329696, guid: 1c0f2faf14460a5478057fd4e0575576, type: 3}
+  Graphic: {fileID: 1992623236052302, guid: 85ad2c556fdbd5747ac7f5f67f10e59b, type: 3}

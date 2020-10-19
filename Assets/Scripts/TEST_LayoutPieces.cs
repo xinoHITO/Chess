@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class TEST_LayoutPieces : MonoBehaviour
 {
-    public ChessPiece[] Pieces;
     public PlayerControl Player;
+
+    public Transform MyPieces;
+    public Transform RivalPieces;
 
     void Start()
     {
@@ -13,11 +15,25 @@ public class TEST_LayoutPieces : MonoBehaviour
         {
             Player.MyPieces = new List<ChessPiece>();
         }
-        
-        foreach (var piece in Pieces)
+
+        foreach (Transform child in MyPieces)
         {
+            var piece = child.GetComponentInChildren<ChessPiece>();
             Player.MyPieces.Add(piece);
         }
+
+        StartCoroutine(Delay());
+
+        IEnumerator Delay()
+        {
+            yield return new WaitForSeconds(0.1f);
+            foreach (Transform child in RivalPieces)
+            {
+                var piece = child.GetComponentInChildren<Renderer>();
+                piece.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
+            }
+        }
+
     }
 
 }

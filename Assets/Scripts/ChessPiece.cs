@@ -6,6 +6,8 @@ public class ChessPiece : MonoBehaviour
 {
     public MoveLogicBase MoveLogic;
 
+    public Transform GraphicContainer;
+
     protected static Board BoardManager;
 
     protected BoardSpace CurrentSpace;
@@ -19,6 +21,8 @@ public class ChessPiece : MonoBehaviour
             return;
         }
         BoardManager.OnCreatedBoard += Initialize;
+
+
     }
 
 #if UNITY_EDITOR
@@ -61,6 +65,14 @@ public class ChessPiece : MonoBehaviour
 
     private void Initialize()
     {
+        foreach (Transform child in GraphicContainer)
+        {
+            Destroy(child.gameObject);
+        }
+        GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
+        pieceGraphic.transform.localPosition = Vector3.zero;
+        pieceGraphic.transform.localRotation = Quaternion.identity;
+
         CurrentSpace = BoardManager.GetGridSpace(this);
         CurrentSpace.OccupySpace(this);
     }

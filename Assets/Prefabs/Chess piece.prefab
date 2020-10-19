@@ -88,4 +88,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79260aff36511ef40bea53073ab17aba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveLogic: {fileID: 0}
+  MoveLogic: {fileID: 11400000, guid: 0370223c03c206e4181e6a1e7a554a31, type: 2}
+  GraphicContainer: {fileID: 1224413687445248680}

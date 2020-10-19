@@ -14,6 +14,10 @@ public class MoveLogicPawn : MoveLogicBase
             if (temp != null)
             {
                 spaces.Add(temp);
+                if (temp.IsOccupied())
+                {
+                    break;
+                }
             }
         }
         return spaces.ToArray();
