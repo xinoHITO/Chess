@@ -65,6 +65,14 @@ public class ChessPiece : MonoBehaviour
 
     private void Initialize()
     {
+        InitializeGraphic();
+
+        CurrentSpace = BoardManager.GetGridSpace(this);
+        CurrentSpace.OccupySpace(this);
+    }
+
+    private void InitializeGraphic()
+    {
         foreach (Transform child in GraphicContainer)
         {
             Destroy(child.gameObject);
@@ -72,9 +80,6 @@ public class ChessPiece : MonoBehaviour
         GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
         pieceGraphic.transform.localPosition = Vector3.zero;
         pieceGraphic.transform.localRotation = Quaternion.identity;
-
-        CurrentSpace = BoardManager.GetGridSpace(this);
-        CurrentSpace.OccupySpace(this);
     }
 
     public void MoveTo(BoardSpace targetSpace)
@@ -121,6 +126,15 @@ public class ChessPiece : MonoBehaviour
         foreach (var space in spaces)
         {
             space.HighlightClick();
+        }
+    }
+
+    public void HighlightSelect()
+    {
+        var spaces = GetAvailableSpaces();
+        foreach (var space in spaces)
+        {
+            space.HighlightSelect();
         }
     }
 

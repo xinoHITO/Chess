@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class PlayerControl : MonoBehaviour
 {
@@ -14,6 +15,11 @@ public class PlayerControl : MonoBehaviour
 
     public List<ChessPiece> MyPieces;
 
+    public bool IsTurnReady = false;
+
+    public UnityAction OnTurnStart;
+    public UnityAction OnTurnEnded;
+
     void Start()
     {
         MainCamera = Camera.main;
@@ -21,6 +27,8 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
+        if (!IsTurnReady) return;
+
         ChessPiece selectedPiece = GetPieceBelowMouse();
 
         if (ClickedPiece == null)
@@ -46,6 +54,19 @@ public class PlayerControl : MonoBehaviour
         LastSelectedPiece = selectedPiece;
     }
 
+    private void ClickHighlightedBoardSpace()
+    {
+        if (!Input.GetMouseButtonDown(0)) return;
+
+        BoardSpace boardSpace = GetBoardSpaceBelowMouse();
+
+        if (boardSpace != null)
+        {
+            ClickedPiece?.MoveTo(boardSpace);
+            EndTurn();
+        }
+    }
+
     private void ClickPiece(ChessPiece selectedPiece)
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -56,15 +77,10 @@ public class PlayerControl : MonoBehaviour
         ClickedPiece?.HighlightClick();
     }
 
-    private void ClickHighlightedBoardSpace()
+    private void EndTurn()
     {
-        if (!Input.GetMouseButtonDown(0)) return;
-        BoardSpace boardSpace = GetBoardSpaceBelowMouse();
-
-        if (boardSpace != null)
-        {
-            ClickedPiece?.MoveTo(boardSpace);
-        }
+        IsTurnReady = false;
+        OnTurnEnded?.Invoke();
     }
 
     private BoardSpace GetBoardSpaceBelowMouse()

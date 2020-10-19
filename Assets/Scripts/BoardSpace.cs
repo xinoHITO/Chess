@@ -11,6 +11,8 @@ public class BoardSpace : MonoBehaviour
     public int x = 0;
     public int y = 0;
 
+    public Color SelectColor;
+
     public Color HoverColor;
     public Color ClickColor;
 
@@ -51,7 +53,14 @@ public class BoardSpace : MonoBehaviour
     public void HighlightClick()
     {
         DoHighlight(ClickColor);
+        gameObject.layer = LAYER_DEFAULT;
     }
+
+    public void HighlightSelect()
+    {
+        DoHighlight(SelectColor);
+    }
+
 
     public void ClearHighlight()
     {
@@ -64,6 +73,5 @@ public class BoardSpace : MonoBehaviour
         Highlight.SetActive(true);
         HighlightRend.material.color = color;
         HighlightRend.material.SetColor("_Emission", color);
-        gameObject.layer = LAYER_DEFAULT;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class TEST_LayoutPieces : MonoBehaviour
 {
     public PlayerControl Player;
+    public PlayerControl Player2;
 
     public Transform MyPieces;
     public Transform RivalPieces;
@@ -29,8 +30,16 @@ public class TEST_LayoutPieces : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             foreach (Transform child in RivalPieces)
             {
-                var piece = child.GetComponentInChildren<Renderer>();
-                piece.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
+                var rend = child.GetComponentInChildren<Renderer>();
+                rend.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
+                
+                if (Player2.MyPieces == null)
+                {
+                    Player2.MyPieces = new List<ChessPiece>();
+                }
+
+                var piece = child.GetComponentInChildren<ChessPiece>();
+                Player2.MyPieces.Add(piece);
             }
         }
 
