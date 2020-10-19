@@ -14,11 +14,29 @@ public class BoardSpace : MonoBehaviour
     public Color HoverColor;
     public Color ClickColor;
 
+    public ChessPiece Piece { get; set; }
+
     Renderer HighlightRend;
 
     private void Start()
     {
         HighlightRend = Highlight.GetComponent<Renderer>();
+    }
+
+    public void OccupySpace(ChessPiece newPiece)
+    {
+        if (Piece != null)
+        {
+            Destroy(Piece.gameObject);
+        }
+
+        newPiece.transform.position = transform.position;
+        Piece = newPiece;
+    }
+
+    public void EmptySpace()
+    {
+        Piece = null;
     }
 
     public void HighlightHover()

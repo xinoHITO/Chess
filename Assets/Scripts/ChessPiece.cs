@@ -12,7 +12,6 @@ public class ChessPiece : MonoBehaviour
 
     void Start()
     {
-
         BoardManager = Board.Instance;
         if (BoardManager == null)
         {
@@ -47,28 +46,23 @@ public class ChessPiece : MonoBehaviour
     }
 
 #endif
+
     public BoardSpace[] GetAvailableSpaces()
     {
-        return MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+        if (CurrentSpace != null)
+        {
+            return MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+        }
+        else
+        {
+            return new BoardSpace[0];
+        }
     }
 
     private void Initialize()
     {
-        Vector3 origin = transform.position + Vector3.up * 100;
-        RaycastHit hitInfo;
-
-        List<string> layerNames = new List<string>();
-        layerNames.Add(LayerMask.LayerToName(gameObject.layer));
-        int mask = LayerMask.GetMask(layerNames.ToArray());
-        mask = ~mask;
-        if (Physics.Raycast(origin, Vector3.down, out hitInfo, 1000, mask))
-        {
-            CurrentSpace = hitInfo.collider?.GetComponent<BoardSpace>();
-        }
-        else
-        {
-            CurrentSpace = BoardManager.GetGridSpace(0, 0);
-        }
+        CurrentSpace = BoardManager.GetGridSpace(this);
+        CurrentSpace.OccupySpace(this);
     }
 
     public void MoveTo(BoardSpace targetSpace)
@@ -86,8 +80,9 @@ public class ChessPiece : MonoBehaviour
             return;
         }
 
+        CurrentSpace.EmptySpace();
         CurrentSpace = gridSpace;
-        transform.position = gridSpace.transform.position;
+        CurrentSpace.OccupySpace(this);
     }
 
     public void ClearHighlight()

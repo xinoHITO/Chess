@@ -69,6 +69,29 @@ public class Board : MonoBehaviour
         }
     }
 
+    public BoardSpace GetGridSpace(ChessPiece piece)
+    {
+        Vector3 origin = piece.transform.position + Vector3.up * 100;
+        RaycastHit hitInfo;
+
+        List<string> layerNames = new List<string>();
+        layerNames.Add(LayerMask.LayerToName(piece.gameObject.layer));
+        int mask = LayerMask.GetMask(layerNames.ToArray());
+        mask = ~mask;
+
+        BoardSpace space;
+        if (Physics.Raycast(origin, Vector3.down, out hitInfo, 1000, mask))
+        {
+            space = hitInfo.collider?.GetComponent<BoardSpace>();
+        }
+        else
+        {
+            space = GetGridSpace(0, 0);
+        }
+
+        return space;
+    }
+
     public BoardSpace GetGridSpace(int x, int y)
     {
         foreach (var gridSpace in BoardSpaces)
@@ -81,7 +104,8 @@ public class Board : MonoBehaviour
         return null;
     }
 
-    public void ClearHighlight() {
+    public void ClearHighlight()
+    {
         foreach (var space in BoardSpaces)
         {
             space.ClearHighlight();

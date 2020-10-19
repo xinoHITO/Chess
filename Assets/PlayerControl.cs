@@ -12,6 +12,8 @@ public class PlayerControl : MonoBehaviour
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
+    public List<ChessPiece> MyPieces;
+
     void Start()
     {
         MainCamera = Camera.main;
@@ -33,9 +35,9 @@ public class PlayerControl : MonoBehaviour
 
     private void HoverPieces(ChessPiece selectedPiece)
     {
-        if (selectedPiece == null)
+        if (selectedPiece == null || selectedPiece != LastSelectedPiece)
         {
-            LastSelectedPiece?.ClearHighlight();
+            Board.Instance.ClearHighlight();
         }
         else
         {
@@ -57,7 +59,16 @@ public class PlayerControl : MonoBehaviour
     private void ClickHighlightedBoardSpace()
     {
         if (!Input.GetMouseButtonDown(0)) return;
+        BoardSpace boardSpace = GetBoardSpaceBelowMouse();
 
+        if (boardSpace != null)
+        {
+            ClickedPiece?.MoveTo(boardSpace);
+        }
+    }
+
+    private BoardSpace GetBoardSpaceBelowMouse()
+    {
         Ray ray = MainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
         BoardSpace boardSpace = null;
@@ -67,14 +78,12 @@ public class PlayerControl : MonoBehaviour
             Debug.DrawRay(ray.origin, ray.direction * 1000, Color.blue);
             boardSpace = hitInfo.collider?.GetComponent<BoardSpace>();
         }
-        else {
+        else
+        {
             Debug.DrawRay(ray.origin, ray.direction * 1000, Color.magenta);
         }
 
-        if (boardSpace != null)
-        {
-            ClickedPiece?.MoveTo(boardSpace);
-        }
+        return boardSpace;
     }
 
     private ChessPiece GetPieceBelowMouse()
@@ -86,7 +95,11 @@ public class PlayerControl : MonoBehaviour
         {
             piece = hitInfo.collider?.GetComponent<ChessPiece>();
         }
-        return piece;
+        if (piece != null && MyPieces.Contains(piece))
+        {
+            return piece;
+        }
+        return null;
     }
 
 }
