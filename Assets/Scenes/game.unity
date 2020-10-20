@@ -132,7 +132,7 @@ PrefabInstance:
     - target: {fileID: 5988783250380780026, guid: 9416e86aa3e56554b97aa830a99c3e21,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 5988783250380780026, guid: 9416e86aa3e56554b97aa830a99c3e21,
         type: 3}
@@ -898,7 +898,7 @@ PrefabInstance:
     - target: {fileID: 5988783250380780026, guid: 57f7c41e6785051488308f21d61a5a2e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5988783250380780026, guid: 57f7c41e6785051488308f21d61a5a2e,
         type: 3}
@@ -1116,7 +1116,6 @@ MonoBehaviour:
   ChessPieceMask:
     serializedVersion: 2
     m_Bits: 256
-  MyPieces: []
   IsTurnReady: 1
 --- !u!4 &2146647504
 Transform:
@@ -1167,7 +1166,6 @@ MonoBehaviour:
   ChessPieceMask:
     serializedVersion: 2
     m_Bits: 256
-  MyPieces: []
   IsTurnReady: 0
 --- !u!4 &2146784215
 Transform:

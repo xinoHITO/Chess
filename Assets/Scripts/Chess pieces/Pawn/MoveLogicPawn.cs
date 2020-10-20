@@ -13,13 +13,29 @@ public class MoveLogicPawn : MoveLogicBase
             var temp = Board.Instance.GetGridSpace(x, y + i);
             if (temp != null)
             {
-                spaces.Add(temp);
-                if (temp.IsOccupied())
+                if (!temp.IsOccupied())
+                {
+                    spaces.Add(temp);
+                }
+                else
                 {
                     break;
                 }
             }
         }
+
+        var t = Board.Instance.GetGridSpace(x + 1, y + 1);
+        if (t != null && t.IsOccupied())
+        {
+            spaces.Add(t);
+        }
+
+        t = Board.Instance.GetGridSpace(x - 1, y + 1);
+        if (t != null && t.IsOccupied())
+        {
+            spaces.Add(t);
+        }
+
         return spaces.ToArray();
     }
 }
