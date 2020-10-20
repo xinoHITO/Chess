@@ -12,15 +12,11 @@ public class TEST_LayoutPieces : MonoBehaviour
 
     void Start()
     {
-        if (Player.MyPieces == null)
-        {
-            Player.MyPieces = new List<ChessPiece>();
-        }
-
+        
         foreach (Transform child in MyPieces)
         {
             var piece = child.GetComponentInChildren<ChessPiece>();
-            Player.MyPieces.Add(piece);
+            piece.MyPlayer = Player;
         }
 
         StartCoroutine(Delay());
@@ -33,13 +29,8 @@ public class TEST_LayoutPieces : MonoBehaviour
                 var rend = child.GetComponentInChildren<Renderer>();
                 rend.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
                 
-                if (Player2.MyPieces == null)
-                {
-                    Player2.MyPieces = new List<ChessPiece>();
-                }
-
                 var piece = child.GetComponentInChildren<ChessPiece>();
-                Player2.MyPieces.Add(piece);
+                piece.MyPlayer = Player2;
             }
         }
 

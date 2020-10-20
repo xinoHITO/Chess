@@ -24,8 +24,6 @@ public class PlayerControl : MonoBehaviour
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
-    public List<ChessPiece> MyPieces;
-
     public bool IsTurnReady = false;
 
     public UnityAction OnTurnStart;
@@ -88,6 +86,9 @@ public class PlayerControl : MonoBehaviour
             ClickedPiece?.MoveTo(boardSpace);
             EndTurn();
         }
+        else {
+            NextState = PlayerState.Normal;
+        }
     }
 
     private void ClickPiece(ChessPiece selectedPiece)
@@ -112,9 +113,15 @@ public class PlayerControl : MonoBehaviour
     private void EndTurn()
     {
         IsTurnReady = false;
-        NextState = PlayerState.Normal;
-        Board.Instance.ClearHighlight();
+        ReturnToNormal();
         OnTurnEnded?.Invoke();
+    }
+
+    private void ReturnToNormal()
+    {
+        NextState = PlayerState.Normal;
+        ClickedPiece = null;
+        Board.Instance.ClearHighlight();
     }
 
     private BoardSpace GetBoardSpaceBelowMouse()
@@ -145,7 +152,8 @@ public class PlayerControl : MonoBehaviour
         {
             piece = hitInfo.collider?.GetComponent<ChessPiece>();
         }
-        if (piece != null && MyPieces.Contains(piece))
+        
+        if (piece != null && piece.MyPlayer == this)
         {
             return piece;
         }

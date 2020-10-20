@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class ChessPiece : MonoBehaviour
 {
+    public PlayerControl MyPlayer;
+
     public MoveLogicBase MoveLogic;
 
     public Transform GraphicContainer;
@@ -21,41 +23,22 @@ public class ChessPiece : MonoBehaviour
             return;
         }
         BoardManager.OnCreatedBoard += Initialize;
-
-
     }
-
-#if UNITY_EDITOR
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Move();
-        }
-    }
-
-    private void Move()
-    {
-        BoardSpace[] spaces = GetAvailableSpaces();
-        foreach (var space in spaces)
-        {
-            Debug.DrawRay(space.transform.position, Vector3.up * 1000, Color.green, 1.0f);
-        }
-
-        if (spaces.Length > 0)
-        {
-            int index = UnityEngine.Random.Range(0, spaces.Length);
-            MoveTo(spaces[index]);
-        }
-    }
-
-#endif
 
     public BoardSpace[] GetAvailableSpaces()
     {
         if (CurrentSpace != null)
         {
-            return MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+            var availableSpaces = MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+            List<BoardSpace> result = new List<BoardSpace>();
+            foreach (var space in availableSpaces)
+            {
+                if (space.Piece?.MyPlayer != MyPlayer)
+                {
+                    result.Add(space);
+                }
+            }
+            return result.ToArray();
         }
         else
         {
