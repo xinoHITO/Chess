@@ -6,6 +6,17 @@ using UnityEngine.Events;
 
 public class PlayerControl : MonoBehaviour
 {
+    public enum PlayerState
+    {
+        Normal,
+        HoveringOverPiece,
+        ClickedPiece
+    }
+
+    public PlayerState State { get; set; }
+
+    private PlayerState NextState;
+
     public LayerMask BoardSpaceMask;
     public LayerMask ChessPieceMask;
     private static Camera MainCamera;
@@ -31,25 +42,37 @@ public class PlayerControl : MonoBehaviour
 
         ChessPiece selectedPiece = GetPieceBelowMouse();
 
-        if (ClickedPiece == null)
+        if (State == PlayerState.Normal || State == PlayerState.HoveringOverPiece)
         {
             HoverPieces(selectedPiece);
         }
+        if (State == PlayerState.HoveringOverPiece)
+        {
+            ClickPiece(selectedPiece);
+        }
+        if (State == PlayerState.ClickedPiece)
+        {
+            ClickHighlightedBoardSpace();
+        }
 
-        ClickHighlightedBoardSpace();
+        State = NextState;
 
-        ClickPiece(selectedPiece);
     }
 
     private void HoverPieces(ChessPiece selectedPiece)
     {
         if (selectedPiece == null || selectedPiece != LastSelectedPiece)
         {
+            if (selectedPiece == null)
+            {
+                NextState = PlayerState.Normal;
+            }
             Board.Instance.ClearHighlight();
         }
         else
         {
             selectedPiece.HighlightHover();
+            NextState = PlayerState.HoveringOverPiece;
         }
         LastSelectedPiece = selectedPiece;
     }
@@ -75,11 +98,22 @@ public class PlayerControl : MonoBehaviour
 
         ClickedPiece = selectedPiece;
         ClickedPiece?.HighlightClick();
+
+        if (ClickedPiece != null)
+        {
+            NextState = PlayerState.ClickedPiece;
+        }
+        else
+        {
+            NextState = PlayerState.Normal;
+        }
     }
 
     private void EndTurn()
     {
         IsTurnReady = false;
+        NextState = PlayerState.Normal;
+        Board.Instance.ClearHighlight();
         OnTurnEnded?.Invoke();
     }
 

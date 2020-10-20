@@ -24,8 +24,9 @@ public class TurnManager : MonoBehaviour
 
     private void NextTurn()
     {
-        Debug.Log("Next turn");
+        
         Index = (Index + 1) % Players.Length;
         Players[Index].IsTurnReady = true;
+        Debug.Log("Next turn:"+ Players[Index].name);
     }
 }
