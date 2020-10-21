@@ -92,6 +92,12 @@ public class Board : MonoBehaviour
         return space;
     }
 
+    public BoardSpace GetGridSpace(Vector2 pos) {
+        int x = (int)pos.x;
+        int y = (int)pos.y;
+        return GetGridSpace(x, y);
+    }
+
     public BoardSpace GetGridSpace(int x, int y)
     {
         foreach (var gridSpace in BoardSpaces)

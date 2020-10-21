@@ -29,7 +29,8 @@ public class ChessPiece : MonoBehaviour
     {
         if (CurrentSpace != null)
         {
-            var availableSpaces = MoveLogic?.GetAvailableSpaces(CurrentSpace.x, CurrentSpace.y);
+            Vector2 forward = new Vector2(MyPlayer.transform.forward.x, MyPlayer.transform.forward.z);
+            var availableSpaces = MoveLogic?.GetAvailableSpaces(CurrentSpace, forward, MyPlayer.transform.right);
             List<BoardSpace> result = new List<BoardSpace>();
             foreach (var space in availableSpaces)
             {

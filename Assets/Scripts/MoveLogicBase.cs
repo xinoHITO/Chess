@@ -7,7 +7,7 @@ public class MoveLogicBase : ScriptableObject
 {
     public GameObject Graphic;
 
-    public virtual BoardSpace[] GetAvailableSpaces(int x, int y)
+    public virtual BoardSpace[] GetAvailableSpaces(BoardSpace currentBoardSpace, Vector2 forward, Vector2 right)
     {
         BoardSpace[] spaces = new BoardSpace[1];
         spaces[0] = Board.Instance.GetGridSpace(0, 0);

@@ -19,6 +19,12 @@ public class TEST_LayoutPieces : MonoBehaviour
             piece.MyPlayer = Player;
         }
 
+        foreach (Transform child in RivalPieces)
+        {
+            var piece = child.GetComponentInChildren<ChessPiece>();
+            piece.MyPlayer = Player2;
+        }
+
         StartCoroutine(Delay());
 
         IEnumerator Delay()
@@ -28,9 +34,6 @@ public class TEST_LayoutPieces : MonoBehaviour
             {
                 var rend = child.GetComponentInChildren<Renderer>();
                 rend.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
-                
-                var piece = child.GetComponentInChildren<ChessPiece>();
-                piece.MyPlayer = Player2;
             }
         }
 
