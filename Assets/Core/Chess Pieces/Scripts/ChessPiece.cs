@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class ChessPiece : MonoBehaviour
 {
+    public delegate void OnDeadDelegate(ChessPiece killer,ChessPiece victim);
+    public OnDeadDelegate OnDead;
+
     public PlayerControl MyPlayer;
 
     public MoveLogicBase MoveLogic;
@@ -121,5 +125,10 @@ public class ChessPiece : MonoBehaviour
             space.HighlightSelect();
         }
     }
+    
+    public void Die(ChessPiece killer) {
+        OnDead?.Invoke(killer,this);
 
+        Destroy(gameObject);
+    }
 }

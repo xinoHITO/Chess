@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class BoardSpace : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class BoardSpace : MonoBehaviour
     {
         if (Piece != null)
         {
-            Destroy(Piece.gameObject);
+            Piece.Die(newPiece);
         }
 
         newPiece.transform.position = transform.position;
@@ -41,7 +42,8 @@ public class BoardSpace : MonoBehaviour
         Piece = null;
     }
 
-    public bool IsOccupied() {
+    public bool IsOccupied()
+    {
         return Piece != null;
     }
 
@@ -74,4 +76,5 @@ public class BoardSpace : MonoBehaviour
         HighlightRend.material.color = color;
         HighlightRend.material.SetColor("_Emission", color);
     }
+
 }
