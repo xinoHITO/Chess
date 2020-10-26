@@ -1,0 +1,43 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+[CreateAssetMenu(fileName = "MoveLogic_Pawn", menuName = "Pawn move logic", order = 1)]
+public class MoveLogicPawn : MoveLogicBase
+{
+    public override BoardSpace[] GetAvailableSpaces(BoardSpace currentBoardSpace, Vector2 forward, Vector2 right)
+    {
+        List<BoardSpace> spaces = new List<BoardSpace>();
+        Vector2 currentPos = new Vector2(currentBoardSpace.x, currentBoardSpace.y);
+
+        for (int i = 1; i <= 2; i++)
+        {
+            var temp = Board.Instance.GetGridSpace(currentPos+(forward*i));
+            if (temp != null)
+            {
+                if (!temp.IsOccupied())
+                {
+                    spaces.Add(temp);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        var t = Board.Instance.GetGridSpace(currentPos + forward + right);
+        if (t != null && t.IsOccupied())
+        {
+            spaces.Add(t);
+        }
+
+        t = Board.Instance.GetGridSpace(currentPos + forward - right);
+        if (t != null && t.IsOccupied())
+        {
+            spaces.Add(t);
+        }
+
+        return spaces.ToArray();
+    }
+}
