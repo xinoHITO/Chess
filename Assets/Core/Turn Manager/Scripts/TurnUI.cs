@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class TurnUI : MonoBehaviour
+public class TurnUI : NetworkBehaviour
 {
-    public GameObject PlayerLabel;
+    public UnityEngine.GameObject PlayerLabel;
     private TMP_Text LabelText;
     private Animator LabelAnimator;
     private TurnManager TurnManager;
@@ -23,13 +24,24 @@ public class TurnUI : MonoBehaviour
 
     private void OnEndPlayerTurn(PlayerControl player)
     {
+        ShowTurnLabel(player.name);
+    }
+
+    [ClientRpc]
+    private void ShowTurnLabel(string playerName)
+    {
         LabelAnimator.Play("Base Layer.Show");
-        LabelText.text = string.Format("{0}'s turn",player.gameObject.name);
+        LabelText.text = string.Format("{0}'s turn", playerName);
     }
 
     private void OnStartNextTurn(PlayerControl player)
     {
+        RpcHideTurnLabel();
+    }
+
+    [ClientRpc]
+    private void RpcHideTurnLabel()
+    {
         LabelAnimator.Play("Base Layer.Hide");
-        
     }
 }

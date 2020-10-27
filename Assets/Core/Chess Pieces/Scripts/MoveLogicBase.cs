@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MoveLogic_New", menuName = "Piece move logic", order = 1)]
 public class MoveLogicBase : ScriptableObject
 {
-    public GameObject Graphic;
+    public UnityEngine.GameObject Graphic;
 
     public virtual BoardSpace[] GetAvailableSpaces(BoardSpace currentBoardSpace, Vector2 forward, Vector2 right)
     {

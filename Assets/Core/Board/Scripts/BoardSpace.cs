@@ -8,7 +8,7 @@ public class BoardSpace : MonoBehaviour
     private const int LAYER_DEFAULT = 0;
     private const int LAYER_IGNORE_RAYCAST = 2;
 
-    public GameObject Highlight;
+    public UnityEngine.GameObject Highlight;
     public int x = 0;
     public int y = 0;
 

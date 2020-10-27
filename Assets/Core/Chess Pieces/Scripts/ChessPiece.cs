@@ -1,14 +1,19 @@
-﻿using System;
+﻿using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ChessPiece : MonoBehaviour
+public class ChessPiece : NetworkBehaviour
 {
     public delegate void OnDeadDelegate(ChessPiece killer,ChessPiece victim);
     public OnDeadDelegate OnDead;
+    
+    public UnityEngine.GameObject MyPlayer;
 
-    public PlayerControl MyPlayer;
+    [SyncVar(hook = nameof(OnMyPlayerChanged))]
+    public uint MyPlayerID;
 
     public MoveLogicBase MoveLogic;
 
@@ -65,7 +70,7 @@ public class ChessPiece : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
+        UnityEngine.GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
         pieceGraphic.transform.localPosition = Vector3.zero;
         pieceGraphic.transform.localRotation = Quaternion.identity;
     }
@@ -131,4 +136,29 @@ public class ChessPiece : MonoBehaviour
 
         Destroy(gameObject);
     }
+
+
+    void OnMyPlayerChanged(uint _, uint newValue)
+    {
+        Debug.Log(string.Format("OnMyPlayerChanged | {0} | uid:{1}", gameObject.name, newValue));
+        if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity)) { 
+            MyPlayer = identity.gameObject;
+            Debug.Log("FOUND 1!");
+        }
+        else
+            StartCoroutine(FindMyPlayer());
+    }
+
+    IEnumerator FindMyPlayer()
+    {
+        while (MyPlayer == null)
+        {
+            yield return null;
+            if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity)) { 
+                MyPlayer = identity.gameObject;
+                Debug.Log("FOUND 2!");
+            }
+        }
+    }
+
 }

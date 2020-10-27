@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1731347254672792979}
   - component: {fileID: 1731347254672792978}
+  - component: {fileID: 4630484728430760573}
   m_Layer: 0
-  m_Name: Player Black
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -40,9 +41,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1731347254672792977}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e3f04bf6169942468695007d04960ff, type: 3}
+  m_Script: {fileID: 11500000, guid: 1da34cd0808b8884099ea450ef841a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   BoardSpaceMask:
     serializedVersion: 2
     m_Bits: 1
@@ -50,3 +53,19 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   IsTurnReady: 0
+--- !u!114 &4630484728430760573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1731347254672792977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b91ecbcc199f4492b9a91e820070131, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneId: 0
+  serverOnly: 0
+  m_AssetId: 
+  hasSpawned: 0

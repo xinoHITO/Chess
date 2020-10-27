@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : NetworkBehaviour
 {
     public enum PlayerState
     {
@@ -24,6 +25,7 @@ public class PlayerControl : MonoBehaviour
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
+    [SyncVar]
     public bool IsTurnReady = false;
 
     public UnityAction OnTurnStart;
@@ -36,7 +38,7 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        if (!IsTurnReady) return;
+        if (!IsTurnReady || !isLocalPlayer) return;
 
         ChessPiece selectedPiece = GetPieceBelowMouse();
 
@@ -109,11 +111,16 @@ public class PlayerControl : MonoBehaviour
             NextState = PlayerState.Normal;
         }
     }
-
     private void EndTurn()
     {
-        IsTurnReady = false;
         ReturnToNormal();
+        CmdEndTurn();
+    }
+
+    [Command]
+    private void CmdEndTurn()
+    {
+        IsTurnReady = false;
         OnTurnEnded?.Invoke();
     }
 
@@ -152,12 +159,17 @@ public class PlayerControl : MonoBehaviour
         {
             piece = hitInfo.collider?.GetComponent<ChessPiece>();
         }
-        
-        if (piece != null && piece.MyPlayer == this)
+
+        if (piece != null && piece.MyPlayer == gameObject)
         {
             return piece;
         }
         return null;
+    }
+
+    [ClientRpc]
+    public void RpcSetName(string name) {
+        gameObject.name = name;
     }
 
 }

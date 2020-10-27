@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -17,8 +18,7 @@ public class TurnManager : MonoBehaviour
     public OnNextTurnDelegate OnFinishPlayerTurn;
     public OnNextTurnDelegate OnStartNextTurn;
 
-    // Start is called before the first frame update
-    void Start()
+    public void Initialize()
     {
         Players = FindObjectsOfType<PlayerControl>();
         
