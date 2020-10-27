@@ -1,4 +1,5 @@
 ﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -30,14 +31,18 @@ public class Board : NetworkBehaviour
             Destroy(this);
         }
 
-        NetworkManagerChess.OnGameIsReady += RpcInitialize;
+        NetworkManagerChess.OnGameIsReady += Initialize;
+    }
+
+    private void Initialize(uint whitePlayerId, uint blackPlayerId)
+    {
+        RpcInitialize();
     }
 
     [ClientRpc]
     void RpcInitialize()
     {
         CreateBoardSpaces();
-
         CacheBoardSpaces();
 
         StartCoroutine(DelayCoroutine());
@@ -48,6 +53,7 @@ public class Board : NetworkBehaviour
             OnCreatedBoard?.Invoke();
         }
     }
+
 
     private void CreateBoardSpaces()
     {
@@ -95,7 +101,8 @@ public class Board : NetworkBehaviour
         return space;
     }
 
-    public BoardSpace GetGridSpace(Vector2 pos) {
+    public BoardSpace GetGridSpace(Vector2 pos)
+    {
         int x = (int)pos.x;
         int y = (int)pos.y;
         return GetGridSpace(x, y);

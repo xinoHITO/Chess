@@ -13,7 +13,8 @@ public class NetworkManagerChess : NetworkManager
     public Transform MyPieces;
     public Transform RivalPieces;
 
-    public static UnityAction OnGameIsReady;
+    public delegate void OnGameIsReadyDelegate(uint whitePlayerId, uint blackPlayerId);
+    public static OnGameIsReadyDelegate OnGameIsReady;
 
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
@@ -29,7 +30,6 @@ public class NetworkManagerChess : NetworkManager
         {
             Player = player.GetComponent<PlayerControl>();
             Player.name = "White player";
-            
         }
         else
         {
@@ -44,17 +44,14 @@ public class NetworkManagerChess : NetworkManager
             yield return new WaitForSeconds(0.1f);
 
             AssignPiecesToPlayers();
-            PaintBlackPieces();
 
             Player.RpcSetName("White player");
             Player2.RpcSetName("Black player");
 
-            OnGameIsReady?.Invoke();
+            OnGameIsReady?.Invoke(Player.netId, Player2.netId);
         }
 
     }
-
-    
 
     private void AssignPiecesToPlayers()
     {
@@ -74,12 +71,5 @@ public class NetworkManagerChess : NetworkManager
         }
     }
 
-    private void PaintBlackPieces()
-    {
-        foreach (Transform child in RivalPieces)
-        {
-            var rend = child.GetComponentInChildren<Renderer>();
-            rend.material.color = new Color(84.0f / 255.0f, 84.0f / 255.0f, 84.0f / 255.0f);
-        }
-    }
+
 }
