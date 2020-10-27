@@ -85,10 +85,12 @@ public class PlayerControl : NetworkBehaviour
 
         if (boardSpace != null)
         {
-            ClickedPiece?.MoveTo(boardSpace);
+            
+            ClickedPiece?.CmdMoveTo(boardSpace.x, boardSpace.y);
             EndTurn();
         }
-        else {
+        else
+        {
             NextState = PlayerState.Normal;
         }
     }
@@ -168,7 +170,8 @@ public class PlayerControl : NetworkBehaviour
     }
 
     [ClientRpc]
-    public void RpcSetName(string name) {
+    public void RpcSetName(string name)
+    {
         gameObject.name = name;
     }
 

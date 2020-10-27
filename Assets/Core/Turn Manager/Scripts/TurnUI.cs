@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class TurnUI : NetworkBehaviour
 {
-    public UnityEngine.GameObject PlayerLabel;
+    public GameObject PlayerLabel;
     private TMP_Text LabelText;
     private Animator LabelAnimator;
     private TurnManager TurnManager;
@@ -16,19 +16,23 @@ public class TurnUI : NetworkBehaviour
     void Start()
     {
         TurnManager = GetComponent<TurnManager>();
-        TurnManager.OnFinishPlayerTurn += OnEndPlayerTurn;
-        TurnManager.OnStartNextTurn += OnStartNextTurn;
         LabelAnimator = PlayerLabel.GetComponentInChildren<Animator>();
         LabelText = PlayerLabel.GetComponentInChildren<TMP_Text>();
+
+        if (isServer)
+        {
+            TurnManager.OnFinishPlayerTurn += OnEndPlayerTurn;
+            TurnManager.OnStartNextTurn += OnStartNextTurn;
+        }
     }
 
     private void OnEndPlayerTurn(PlayerControl player)
     {
-        ShowTurnLabel(player.name);
+        RpcShowTurnLabel(player.name);
     }
 
     [ClientRpc]
-    private void ShowTurnLabel(string playerName)
+    private void RpcShowTurnLabel(string playerName)
     {
         LabelAnimator.Play("Base Layer.Show");
         LabelText.text = string.Format("{0}'s turn", playerName);

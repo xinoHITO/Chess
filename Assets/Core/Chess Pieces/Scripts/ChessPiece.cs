@@ -2,15 +2,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class ChessPiece : NetworkBehaviour
 {
     public delegate void OnDeadDelegate(ChessPiece killer,ChessPiece victim);
     public OnDeadDelegate OnDead;
     
-    public UnityEngine.GameObject MyPlayer;
+    public GameObject MyPlayer;
 
     [SyncVar(hook = nameof(OnMyPlayerChanged))]
     public uint MyPlayerID;
@@ -21,6 +21,8 @@ public class ChessPiece : NetworkBehaviour
 
     protected static Board BoardManager;
 
+    [SyncVar(hook = nameof(OnPositionChanged))]
+    protected Vector2 CurrentPosition;
     protected BoardSpace CurrentSpace;
 
     void Start()
@@ -31,6 +33,7 @@ public class ChessPiece : NetworkBehaviour
             Debug.LogError("No board found");
             return;
         }
+
         BoardManager.OnCreatedBoard += Initialize;
     }
 
@@ -70,13 +73,15 @@ public class ChessPiece : NetworkBehaviour
         {
             Destroy(child.gameObject);
         }
-        UnityEngine.GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
+        GameObject pieceGraphic = Instantiate(MoveLogic.Graphic, GraphicContainer);
         pieceGraphic.transform.localPosition = Vector3.zero;
         pieceGraphic.transform.localRotation = Quaternion.identity;
     }
 
-    public void MoveTo(BoardSpace targetSpace)
+    [Command]
+    public void CmdMoveTo(int x, int y)
     {
+        BoardSpace targetSpace = BoardManager.GetGridSpace(x, y);
         if (targetSpace.x >= BoardManager.Rows || targetSpace.y >= BoardManager.Columns)
         {
             Debug.LogError(string.Format("Invalid board position x:{0} | y:{1}", targetSpace.x, targetSpace.y));
@@ -91,7 +96,15 @@ public class ChessPiece : NetworkBehaviour
         }
 
         CurrentSpace.EmptySpace();
-        CurrentSpace = gridSpace;
+        CurrentPosition = new Vector2(gridSpace.x, gridSpace.y);
+    }
+
+    void OnPositionChanged(Vector2 _, Vector2 newValue)
+    {
+        int x = (int)newValue.x;
+        int y = (int)newValue.y;
+
+        CurrentSpace = BoardManager.GetGridSpace(x, y);
         CurrentSpace.OccupySpace(this);
     }
 
@@ -140,10 +153,8 @@ public class ChessPiece : NetworkBehaviour
 
     void OnMyPlayerChanged(uint _, uint newValue)
     {
-        Debug.Log(string.Format("OnMyPlayerChanged | {0} | uid:{1}", gameObject.name, newValue));
         if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity)) { 
             MyPlayer = identity.gameObject;
-            Debug.Log("FOUND 1!");
         }
         else
             StartCoroutine(FindMyPlayer());

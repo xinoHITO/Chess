@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using UnityEngine.Events;
 
 public class NetworkManagerChess : NetworkManager
 {
     [Header("Chess settings")]
-    public TurnManager TurnManager;
-
     private PlayerControl Player;
     private PlayerControl Player2;
 
     public Transform MyPieces;
     public Transform RivalPieces;
 
+    public static UnityAction OnGameIsReady;
+
     public override void OnServerAddPlayer(NetworkConnection conn)
     {
 
         Transform startPos = GetStartPosition();
-        UnityEngine.GameObject player = startPos != null
+        GameObject player = startPos != null
             ? Instantiate(playerPrefab, startPos.position, startPos.rotation)
             : Instantiate(playerPrefab);
 
@@ -48,10 +49,12 @@ public class NetworkManagerChess : NetworkManager
             Player.RpcSetName("White player");
             Player2.RpcSetName("Black player");
 
-            TurnManager.Initialize();
+            OnGameIsReady?.Invoke();
         }
 
     }
+
+    
 
     private void AssignPiecesToPlayers()
     {
@@ -59,11 +62,15 @@ public class NetworkManagerChess : NetworkManager
         {
             var piece = child.GetComponentInChildren<ChessPiece>();
             piece.MyPlayerID = Player.netId;
+            var playerConnection = Player.GetComponent<NetworkIdentity>().connectionToClient;
+            piece.GetComponent<NetworkIdentity>().AssignClientAuthority(playerConnection);
         }
         foreach (Transform child in RivalPieces)
         {
             var piece = child.GetComponentInChildren<ChessPiece>();
             piece.MyPlayerID = Player2.netId;
+            var player2Connection = Player2.GetComponent<NetworkIdentity>().connectionToClient;
+            piece.GetComponent<NetworkIdentity>().AssignClientAuthority(player2Connection);
         }
     }
 

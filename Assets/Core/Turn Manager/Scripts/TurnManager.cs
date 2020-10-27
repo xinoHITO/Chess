@@ -18,6 +18,11 @@ public class TurnManager : MonoBehaviour
     public OnNextTurnDelegate OnFinishPlayerTurn;
     public OnNextTurnDelegate OnStartNextTurn;
 
+    private void Start()
+    {
+        Board.Instance.OnCreatedBoard += Initialize;
+    }
+
     public void Initialize()
     {
         Players = FindObjectsOfType<PlayerControl>();

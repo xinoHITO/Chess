@@ -1,9 +1,10 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Board : MonoBehaviour
+public class Board : NetworkBehaviour
 {
     public BoardSpace GridSpacePrefab;
     public float GridSpaceSize = 1;
@@ -16,7 +17,7 @@ public class Board : MonoBehaviour
 
     public static Board Instance;
 
-    private static BoardSpace[] BoardSpaces;
+    private BoardSpace[] BoardSpaces;
 
     private void Awake()
     {
@@ -28,10 +29,12 @@ public class Board : MonoBehaviour
         {
             Destroy(this);
         }
+
+        NetworkManagerChess.OnGameIsReady += RpcInitialize;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    [ClientRpc]
+    void RpcInitialize()
     {
         CreateBoardSpaces();
 
