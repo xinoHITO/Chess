@@ -56,7 +56,6 @@ public class PlayerControl : NetworkBehaviour
         }
 
         State = NextState;
-
     }
 
     private void HoverPieces(ChessPiece selectedPiece)
@@ -85,8 +84,7 @@ public class PlayerControl : NetworkBehaviour
 
         if (boardSpace != null)
         {
-            
-            ClickedPiece?.CmdMoveTo(boardSpace.x, boardSpace.y);
+            ClickedPiece?.MoveTo(boardSpace.x, boardSpace.y);
             EndTurn();
         }
         else
@@ -113,6 +111,7 @@ public class PlayerControl : NetworkBehaviour
             NextState = PlayerState.Normal;
         }
     }
+
     private void EndTurn()
     {
         ReturnToNormal();

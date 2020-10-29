@@ -2,14 +2,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 
 public class ChessPiece : NetworkBehaviour
 {
-    public delegate void OnDeadDelegate(ChessPiece killer,ChessPiece victim);
+    public delegate void OnDeadDelegate(ChessPiece killer, ChessPiece victim);
     public OnDeadDelegate OnDead;
-    
+
     public GameObject MyPlayer;
 
     [SyncVar(hook = nameof(OnMyPlayerChanged))]
@@ -63,8 +64,23 @@ public class ChessPiece : NetworkBehaviour
     {
         InitializeGraphic();
 
-        CurrentSpace = BoardManager.GetGridSpace(this);
-        CurrentSpace.OccupySpace(this);
+        var startPosition = BoardManager.GetGridSpace(this);
+        SetPosition(startPosition.x, startPosition.y);
+    }
+
+    private void SetPosition(int x, int y)
+    {
+        if (!hasAuthority) return;
+
+        Debug.LogError(string.Format("Set position {0} | x:{1} y:{2}", MyPlayer.name, x, y));
+        CmdSetPosition(x, y);
+    }
+
+    [Command]
+    private void CmdSetPosition(int x, int y)
+    {
+        Debug.LogError(string.Format("CmdSetPosition {0} | x:{1} y:{2}", MyPlayer.name, x, y));
+        CurrentPosition = new Vector2(x, y);
     }
 
     private void InitializeGraphic()
@@ -78,8 +94,7 @@ public class ChessPiece : NetworkBehaviour
         pieceGraphic.transform.localRotation = Quaternion.identity;
     }
 
-    [Command]
-    public void CmdMoveTo(int x, int y)
+    public void MoveTo(int x, int y)
     {
         BoardSpace targetSpace = BoardManager.GetGridSpace(x, y);
         if (targetSpace.x >= BoardManager.Rows || targetSpace.y >= BoardManager.Columns)
@@ -95,17 +110,18 @@ public class ChessPiece : NetworkBehaviour
             return;
         }
 
-        CurrentSpace.EmptySpace();
-        CurrentPosition = new Vector2(gridSpace.x, gridSpace.y);
+        SetPosition(gridSpace.x, gridSpace.y);
     }
 
     void OnPositionChanged(Vector2 _, Vector2 newValue)
     {
+        Debug.LogError(string.Format("OnPositionChanged {0}", newValue));
         int x = (int)newValue.x;
         int y = (int)newValue.y;
-
+      
+        CurrentSpace?.EmptySpace();
         CurrentSpace = BoardManager.GetGridSpace(x, y);
-        CurrentSpace.OccupySpace(this);
+        CurrentSpace?.OccupySpace(this);
     }
 
     public void ClearHighlight()
@@ -143,17 +159,18 @@ public class ChessPiece : NetworkBehaviour
             space.HighlightSelect();
         }
     }
-    
-    public void Die(ChessPiece killer) {
-        OnDead?.Invoke(killer,this);
+
+    public void Die(ChessPiece killer)
+    {
+        OnDead?.Invoke(killer, this);
 
         Destroy(gameObject);
     }
 
-
     void OnMyPlayerChanged(uint _, uint newValue)
     {
-        if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity)) { 
+        if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity))
+        {
             MyPlayer = identity.gameObject;
         }
         else
@@ -165,7 +182,8 @@ public class ChessPiece : NetworkBehaviour
         while (MyPlayer == null)
         {
             yield return null;
-            if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity)) { 
+            if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity))
+            {
                 MyPlayer = identity.gameObject;
                 Debug.Log("FOUND 2!");
             }

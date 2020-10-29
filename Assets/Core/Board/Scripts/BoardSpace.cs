@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -32,7 +33,6 @@ public class BoardSpace : MonoBehaviour
         {
             Piece.Die(newPiece);
         }
-
         newPiece.transform.position = transform.position;
         Piece = newPiece;
     }

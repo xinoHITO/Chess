@@ -41,7 +41,7 @@ public class NetworkManagerChess : NetworkManager
 
         IEnumerator Delay()
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.5f);
 
             AssignPiecesToPlayers();
 
@@ -70,6 +70,5 @@ public class NetworkManagerChess : NetworkManager
             piece.GetComponent<NetworkIdentity>().AssignClientAuthority(player2Connection);
         }
     }
-
 
 }

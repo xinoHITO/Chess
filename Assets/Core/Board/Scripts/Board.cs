@@ -54,7 +54,6 @@ public class Board : NetworkBehaviour
         }
     }
 
-
     private void CreateBoardSpaces()
     {
         for (int i = 0; i < Rows; i++)
@@ -67,7 +66,6 @@ public class Board : NetworkBehaviour
                 boardGrid.transform.position = transform.position + new Vector3(GridSpaceSize * j, 0, GridSpaceSize * i);
             }
         }
-
     }
 
     private void CacheBoardSpaces()
