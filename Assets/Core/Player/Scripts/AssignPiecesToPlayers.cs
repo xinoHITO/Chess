@@ -6,6 +6,10 @@ using UnityEngine;
 
 public class AssignPiecesToPlayers : NetworkBehaviour
 {
+    public Color WhiteColor;
+    public Color BlackColor;
+
+
     private uint WhitePlayerId;
     private uint BlackPlayerId;
 
@@ -44,14 +48,13 @@ public class AssignPiecesToPlayers : NetworkBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             var chessPieces = FindObjectsOfType<ChessPiece>();
-            PaintPieces(chessPieces, whitePlayerId, Color.white);
-            PaintPieces(chessPieces, blackPlayerId, Color.black);
+            PaintPieces(chessPieces, whitePlayerId, WhiteColor);
+            PaintPieces(chessPieces, blackPlayerId, BlackColor);
         }
     }
 
     void PaintPieces(ChessPiece[] pieces, uint playerId, Color color)
     {
-        Debug.LogError(string.Format("PAINT PIECES | Color:{0}", color));
         foreach (ChessPiece chessPiece in pieces)
         {
             if (chessPiece.MyPlayerID == playerId)

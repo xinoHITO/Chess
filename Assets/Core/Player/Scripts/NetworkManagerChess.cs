@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using UnityEngine.Events;
+using Cinemachine;
 
 public class NetworkManagerChess : NetworkManager
 {

@@ -72,14 +72,12 @@ public class ChessPiece : NetworkBehaviour
     {
         if (!hasAuthority) return;
 
-        Debug.LogError(string.Format("Set position {0} | x:{1} y:{2}", MyPlayer.name, x, y));
         CmdSetPosition(x, y);
     }
 
     [Command]
     private void CmdSetPosition(int x, int y)
     {
-        Debug.LogError(string.Format("CmdSetPosition {0} | x:{1} y:{2}", MyPlayer.name, x, y));
         CurrentPosition = new Vector2(x, y);
     }
 
@@ -115,10 +113,9 @@ public class ChessPiece : NetworkBehaviour
 
     void OnPositionChanged(Vector2 _, Vector2 newValue)
     {
-        Debug.LogError(string.Format("OnPositionChanged {0}", newValue));
         int x = (int)newValue.x;
         int y = (int)newValue.y;
-      
+
         CurrentSpace?.EmptySpace();
         CurrentSpace = BoardManager.GetGridSpace(x, y);
         CurrentSpace?.OccupySpace(this);

@@ -1,4 +1,5 @@
-﻿using Mirror;
+﻿using Cinemachine;
+using Mirror;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,6 +21,7 @@ public class PlayerControl : NetworkBehaviour
 
     public LayerMask BoardSpaceMask;
     public LayerMask ChessPieceMask;
+
     private static Camera MainCamera;
 
     private ChessPiece LastSelectedPiece;
@@ -27,8 +29,6 @@ public class PlayerControl : NetworkBehaviour
 
     [SyncVar(hook = nameof(OnTurnReadyChanged))]
     public bool IsTurnReady = false;
-
-    
 
     public UnityAction OnTurnStart;
     public UnityAction OnTurnEnded;
