@@ -25,8 +25,10 @@ public class PlayerControl : NetworkBehaviour
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
-    [SyncVar]
+    [SyncVar(hook = nameof(OnTurnReadyChanged))]
     public bool IsTurnReady = false;
+
+    
 
     public UnityAction OnTurnStart;
     public UnityAction OnTurnEnded;
@@ -123,6 +125,11 @@ public class PlayerControl : NetworkBehaviour
     {
         IsTurnReady = false;
         OnTurnEnded?.Invoke();
+    }
+
+    private void OnTurnReadyChanged(bool oldValue, bool newValue)
+    {
+        ReturnToNormal();
     }
 
     private void ReturnToNormal()

@@ -41,8 +41,8 @@ GameObject:
   - component: {fileID: 4657851167007388740}
   - component: {fileID: 3599459759049872419}
   - component: {fileID: 2725283389342737453}
-  - component: {fileID: 2127079314107189836}
   - component: {fileID: 765162244891766261}
+  - component: {fileID: 2127079314107189836}
   m_Layer: 8
   m_Name: _Chess piece
   m_TagString: Untagged
@@ -94,24 +94,6 @@ MonoBehaviour:
   serverOnly: 0
   m_AssetId: 
   hasSpawned: 0
---- !u!114 &2127079314107189836
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7601337443686088040}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79260aff36511ef40bea53073ab17aba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  MyPlayer: {fileID: 0}
-  MyPlayerID: 0
-  MoveLogic: {fileID: 11400000, guid: 0370223c03c206e4181e6a1e7a554a31, type: 2}
-  GraphicContainer: {fileID: 1224413687445248680}
 --- !u!114 &765162244891766261
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -130,3 +112,21 @@ MonoBehaviour:
   localPositionSensitivity: 0.01
   localRotationSensitivity: 0.01
   localScaleSensitivity: 0.01
+--- !u!114 &2127079314107189836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7601337443686088040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79260aff36511ef40bea53073ab17aba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  MyPlayer: {fileID: 0}
+  MyPlayerID: 0
+  MoveLogic: {fileID: 11400000, guid: 0370223c03c206e4181e6a1e7a554a31, type: 2}
+  GraphicContainer: {fileID: 1224413687445248680}

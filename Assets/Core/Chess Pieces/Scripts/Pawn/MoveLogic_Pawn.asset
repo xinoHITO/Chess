@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: MoveLogic_Pawn
   m_EditorClassIdentifier: 
   Graphic: {fileID: 1006356879557798, guid: 391882f14be491c40962add653844907, type: 3}
+  StartingRows: 0100000006000000
