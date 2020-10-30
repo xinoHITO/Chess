@@ -8,6 +8,9 @@ using UnityEngine;
 public class TurnUI : NetworkBehaviour
 {
     public GameObject PlayerLabel;
+
+    public TMP_Text TurnIndicatorLabel;
+
     private TMP_Text LabelText;
     private Animator LabelAnimator;
     private TurnManager TurnManager;
@@ -35,7 +38,9 @@ public class TurnUI : NetworkBehaviour
     private void RpcShowTurnLabel(string playerName)
     {
         LabelAnimator.Play("Base Layer.Show");
-        LabelText.text = string.Format("{0}'s turn", playerName);
+        string text = string.Format("{0}'s turn", playerName);
+        LabelText.text = text;
+        TurnIndicatorLabel.text = text;
     }
 
     private void OnStartNextTurn(PlayerControl player)
