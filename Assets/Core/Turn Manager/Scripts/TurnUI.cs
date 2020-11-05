@@ -38,7 +38,12 @@ public class TurnUI : NetworkBehaviour
     private void RpcShowTurnLabel(string playerName)
     {
         LabelAnimator.Play("Base Layer.Show");
-        string text = string.Format("{0}'s turn", playerName);
+        string text = string.Format("Your turn");
+        if (TurnManager.MyPlayer.name != playerName)
+        {
+            text = string.Format("Opponent's turn");
+        }
+        
         LabelText.text = text;
         TurnIndicatorLabel.text = text;
     }

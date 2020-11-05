@@ -8,6 +8,8 @@ public class TurnManager : MonoBehaviour
 {
     private PlayerControl[] Players;
 
+    public PlayerControl MyPlayer { get; set; }
+
     public float PauseBetweenTurns = 2.5f;
     
     private int Index = 0;
@@ -29,6 +31,11 @@ public class TurnManager : MonoBehaviour
         {
             player.IsTurnReady = false;
             player.OnTurnEnded += FinishPlayerTurn;
+            if (player.isLocalPlayer)
+            {
+                MyPlayer = player;
+                Debug.Log("My player is:" + MyPlayer);
+            }
         }
         Index = -1;
         FinishPlayerTurn();
