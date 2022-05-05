@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class Board : MonoBehaviour
+public class Board : NetworkBehaviour
 {
     public BoardSpace GridSpacePrefab;
     public float GridSpaceSize = 1;
@@ -16,7 +18,7 @@ public class Board : MonoBehaviour
 
     public static Board Instance;
 
-    private static BoardSpace[] BoardSpaces;
+    private BoardSpace[] BoardSpaces;
 
     private void Awake()
     {
@@ -28,13 +30,19 @@ public class Board : MonoBehaviour
         {
             Destroy(this);
         }
+
+        NetworkManagerChess.OnGameIsReady += Initialize;
     }
 
-    // Start is called before the first frame update
-    void Start()
+    private void Initialize(uint whitePlayerId, uint blackPlayerId)
+    {
+        RpcInitialize();
+    }
+
+    [ClientRpc]
+    void RpcInitialize()
     {
         CreateBoardSpaces();
-
         CacheBoardSpaces();
 
         StartCoroutine(DelayCoroutine());
@@ -58,7 +66,6 @@ public class Board : MonoBehaviour
                 boardGrid.transform.position = transform.position + new Vector3(GridSpaceSize * j, 0, GridSpaceSize * i);
             }
         }
-
     }
 
     private void CacheBoardSpaces()
@@ -92,7 +99,8 @@ public class Board : MonoBehaviour
         return space;
     }
 
-    public BoardSpace GetGridSpace(Vector2 pos) {
+    public BoardSpace GetGridSpace(Vector2 pos)
+    {
         int x = (int)pos.x;
         int y = (int)pos.y;
         return GetGridSpace(x, y);

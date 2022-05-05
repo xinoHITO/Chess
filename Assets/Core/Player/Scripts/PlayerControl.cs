@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Cinemachine;
+using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class PlayerControl : MonoBehaviour
+public class PlayerControl : NetworkBehaviour
 {
     public enum PlayerState
     {
@@ -19,11 +21,13 @@ public class PlayerControl : MonoBehaviour
 
     public LayerMask BoardSpaceMask;
     public LayerMask ChessPieceMask;
+
     private static Camera MainCamera;
 
     private ChessPiece LastSelectedPiece;
     private ChessPiece ClickedPiece;
 
+    [SyncVar(hook = nameof(OnTurnReadyChanged))]
     public bool IsTurnReady = false;
 
     public UnityAction OnTurnStart;
@@ -36,7 +40,7 @@ public class PlayerControl : MonoBehaviour
 
     void Update()
     {
-        if (!IsTurnReady) return;
+        if (!IsTurnReady || !isLocalPlayer) return;
 
         ChessPiece selectedPiece = GetPieceBelowMouse();
 
@@ -54,7 +58,6 @@ public class PlayerControl : MonoBehaviour
         }
 
         State = NextState;
-
     }
 
     private void HoverPieces(ChessPiece selectedPiece)
@@ -83,10 +86,11 @@ public class PlayerControl : MonoBehaviour
 
         if (boardSpace != null)
         {
-            ClickedPiece?.MoveTo(boardSpace);
+            ClickedPiece?.MoveTo(boardSpace.x, boardSpace.y);
             EndTurn();
         }
-        else {
+        else
+        {
             NextState = PlayerState.Normal;
         }
     }
@@ -112,9 +116,20 @@ public class PlayerControl : MonoBehaviour
 
     private void EndTurn()
     {
-        IsTurnReady = false;
         ReturnToNormal();
+        CmdEndTurn();
+    }
+
+    [Command]
+    private void CmdEndTurn()
+    {
+        IsTurnReady = false;
         OnTurnEnded?.Invoke();
+    }
+
+    private void OnTurnReadyChanged(bool oldValue, bool newValue)
+    {
+        ReturnToNormal();
     }
 
     private void ReturnToNormal()
@@ -152,12 +167,18 @@ public class PlayerControl : MonoBehaviour
         {
             piece = hitInfo.collider?.GetComponent<ChessPiece>();
         }
-        
-        if (piece != null && piece.MyPlayer == this)
+
+        if (piece != null && piece.MyPlayer == gameObject)
         {
             return piece;
         }
         return null;
+    }
+
+    [ClientRpc]
+    public void RpcSetName(string name)
+    {
+        gameObject.name = name;
     }
 
 }

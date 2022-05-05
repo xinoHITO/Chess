@@ -1,13 +1,14 @@
-﻿using System;
+﻿using Mirror;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading;
 using UnityEngine;
-using UnityEngine.Events;
 
 public class TurnManager : MonoBehaviour
 {
     private PlayerControl[] Players;
+
+    public PlayerControl MyPlayer { get; set; }
 
     public float PauseBetweenTurns = 2.5f;
     
@@ -17,8 +18,12 @@ public class TurnManager : MonoBehaviour
     public OnNextTurnDelegate OnFinishPlayerTurn;
     public OnNextTurnDelegate OnStartNextTurn;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Start()
+    {
+        Board.Instance.OnCreatedBoard += Initialize;
+    }
+
+    public void Initialize()
     {
         Players = FindObjectsOfType<PlayerControl>();
         
@@ -26,6 +31,11 @@ public class TurnManager : MonoBehaviour
         {
             player.IsTurnReady = false;
             player.OnTurnEnded += FinishPlayerTurn;
+            if (player.isLocalPlayer)
+            {
+                MyPlayer = player;
+                Debug.Log("My player is:" + MyPlayer);
+            }
         }
         Index = -1;
         FinishPlayerTurn();

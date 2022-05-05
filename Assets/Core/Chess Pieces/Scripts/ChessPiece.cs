@@ -1,14 +1,20 @@
-﻿using System;
+﻿using Mirror;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
+using UnityEditor;
 using UnityEngine;
-using UnityEngine.Events;
 
-public class ChessPiece : MonoBehaviour
+public class ChessPiece : NetworkBehaviour
 {
-    public delegate void OnDeadDelegate(ChessPiece killer,ChessPiece victim);
+    public delegate void OnDeadDelegate(ChessPiece killer, ChessPiece victim);
     public OnDeadDelegate OnDead;
 
-    public PlayerControl MyPlayer;
+    public GameObject MyPlayer;
+
+    [SyncVar(hook = nameof(OnMyPlayerChanged))]
+    public uint MyPlayerID;
 
     public MoveLogicBase MoveLogic;
 
@@ -16,6 +22,8 @@ public class ChessPiece : MonoBehaviour
 
     protected static Board BoardManager;
 
+    [SyncVar(hook = nameof(OnPositionChanged))]
+    protected Vector2 CurrentPosition;
     protected BoardSpace CurrentSpace;
 
     void Start()
@@ -26,6 +34,7 @@ public class ChessPiece : MonoBehaviour
             Debug.LogError("No board found");
             return;
         }
+
         BoardManager.OnCreatedBoard += Initialize;
     }
 
@@ -55,8 +64,21 @@ public class ChessPiece : MonoBehaviour
     {
         InitializeGraphic();
 
-        CurrentSpace = BoardManager.GetGridSpace(this);
-        CurrentSpace.OccupySpace(this);
+        var startPosition = BoardManager.GetGridSpace(this);
+        SetPosition(startPosition.x, startPosition.y);
+    }
+
+    private void SetPosition(int x, int y)
+    {
+        if (!hasAuthority) return;
+
+        CmdSetPosition(x, y);
+    }
+
+    [Command]
+    private void CmdSetPosition(int x, int y)
+    {
+        CurrentPosition = new Vector2(x, y);
     }
 
     private void InitializeGraphic()
@@ -70,8 +92,9 @@ public class ChessPiece : MonoBehaviour
         pieceGraphic.transform.localRotation = Quaternion.identity;
     }
 
-    public void MoveTo(BoardSpace targetSpace)
+    public void MoveTo(int x, int y)
     {
+        BoardSpace targetSpace = BoardManager.GetGridSpace(x, y);
         if (targetSpace.x >= BoardManager.Rows || targetSpace.y >= BoardManager.Columns)
         {
             Debug.LogError(string.Format("Invalid board position x:{0} | y:{1}", targetSpace.x, targetSpace.y));
@@ -85,9 +108,17 @@ public class ChessPiece : MonoBehaviour
             return;
         }
 
-        CurrentSpace.EmptySpace();
-        CurrentSpace = gridSpace;
-        CurrentSpace.OccupySpace(this);
+        SetPosition(gridSpace.x, gridSpace.y);
+    }
+
+    void OnPositionChanged(Vector2 _, Vector2 newValue)
+    {
+        int x = (int)newValue.x;
+        int y = (int)newValue.y;
+
+        CurrentSpace?.EmptySpace();
+        CurrentSpace = BoardManager.GetGridSpace(x, y);
+        CurrentSpace?.OccupySpace(this);
     }
 
     public void ClearHighlight()
@@ -125,10 +156,35 @@ public class ChessPiece : MonoBehaviour
             space.HighlightSelect();
         }
     }
-    
-    public void Die(ChessPiece killer) {
-        OnDead?.Invoke(killer,this);
+
+    public void Die(ChessPiece killer)
+    {
+        OnDead?.Invoke(killer, this);
 
         Destroy(gameObject);
     }
+
+    void OnMyPlayerChanged(uint _, uint newValue)
+    {
+        if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity))
+        {
+            MyPlayer = identity.gameObject;
+        }
+        else
+            StartCoroutine(FindMyPlayer());
+    }
+
+    IEnumerator FindMyPlayer()
+    {
+        while (MyPlayer == null)
+        {
+            yield return null;
+            if (NetworkIdentity.spawned.TryGetValue(MyPlayerID, out NetworkIdentity identity))
+            {
+                MyPlayer = identity.gameObject;
+                Debug.Log("FOUND 2!");
+            }
+        }
+    }
+
 }
